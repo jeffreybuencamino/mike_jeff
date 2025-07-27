@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    {% if title %}
+    <title>{{ title }} - Fighting Covert Aggressives</title>
+    {% else %}
+    <title>Fighting Covert Aggressives</title>
+    {% endif %}
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        html, body {
+            height: 100%;
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+            background-color: #f8f9fa;
+            color: #333;
+            display: flex;
+            flex-direction: column;
+        }
+
+        main {
+            flex: 1;
+        }
+
+        header {
+            background-color: #4b0082;
+            color: rgb(255, 255, 255);
+            padding: 20px;
+            text-align: center;
+        }
+        nav {
+            background-color: #360062;
+            display: flex;
+            justify-content: center;
+            padding: 10px 0;
+        }
+        nav a {
+            color: rgb(255, 255, 255);
+            text-decoration: none;
+            margin: 0 15px;
+            font-weight: bold;
+        }
+        nav a:hover {
+            text-decoration: underline;
+        }
+        main {
+            max-width: 800px;
+            margin: 40px auto;
+            padding: 0 20px;
+            text-align: center;
+        }
+        footer {
+            text-align: center;
+            padding: 20px;
+            background-color: #eee;
+            margin-top: 40px;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>Fighting Covert Aggressives</h1>
+        <p>Breaking the silence.</p>
+    </header>
+
+    <nav>
+        <a href="/index">Home</a>
+        <a href="/login.html">Login</a>
+        <a href="/resources.html">Resources</a>
+        <a href="/mindmap.html">Mindmap</a>
+        <a href="/strategy.html">Strategizing</a>
+        <a href="/profiles.html">Profiles</a>
+    </nav>
+
+    <main>
+        {% block content %}{% endblock %}
+    </main>
+
+    <footer>
+        &copy; 2025 Voices Against Manipulation. All rights reserved.
+    </footer>
+
+</body>
+</html>

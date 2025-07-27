@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h2>Welcome!</h2>
+<p>
+    This is your all-in-one comprehensive guide to fighting back against hidden abuse—whether it's in your home or anywhere else. This will give you the tools to help yourself.
+</p>
+
+<div class="cta">
+    <strong>Want to share your story?</strong>  
+    Join our community or submit anonymously to help others feel less alone.
+</div>
+
+<div class="button-container">
+    <a href="/profiles.html" class="btn">Profiles</a>
+    <a href="/resources.html" class="btn">Resources</a>
+    <a href="/mindmap.html" class="btn">Mindmap</a>
+    <a href="/strategy.html" class="btn">Strategizing</a>
+</div>
+
+<style>
+    .button-container {
+        margin-top: 40px;
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 20px;
+    }
+    .btn {
+        background-color: #4b0082;
+        color: white;
+        padding: 14px 24px;
+        font-size: 16px;
+        border: none;
+        border-radius: 8px;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+        text-decoration: none;
+        display: inline-block;
+    }
+    .btn:hover {
+        background-color: #360062;
+    }
+</style>
+{% endblock %}
