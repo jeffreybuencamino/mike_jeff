@@ -1,7 +1,9 @@
-from flask import render_template
+from flask import render_template, Flask, request, jsonify
 from application import app
 from application.forms import LoginForm
+import requests
 
+API_KEY = 'Your OPENAI API Key'  # Replace with your actual OpenAI API key
 #== Index route ==
 @app.route('/')
 @app.route('/index')
@@ -35,3 +37,22 @@ def strategy():
 def login():
     form = LoginForm()
     return render_template('login.html', title="Login", form=form)
+
+@app.route('/get_response', methods=['POST'])
+def get_response():
+    userMessage = request.json.get('message')
+
+    headers = {'Authorization': f'Bearer {API_KEY}', 'Content-Type': 'application/json'}
+
+    response = requests.post(
+        'https://api.openai.com/v1/chat/completions',
+        headers=headers,
+        json={
+            'model': 'gpt-3.5-turbo',
+            'messages': [{'role': 'user', 'content': userMessage}],
+            'max_tokens': 500
+        }
+    )
+
+    chatbot_reply = response.json()['choices'][0]['message']['content']
+    return jsonify({'response': chatbot_reply})

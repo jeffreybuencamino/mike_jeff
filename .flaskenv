@@ -1,1 +1,2 @@
 FLASK_APP=web_application.py
+FLASK_DEBUG=True

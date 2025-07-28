@@ -58,10 +58,80 @@
             background-color: #eee;
             margin-top: 40px;
         }
+
+        #chatButton {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background-color: #4b0082;
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            font-size: 24px;
+            cursor: pointer;
+            box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        #chatContainer {
+            display: none;
+            position: fixed;
+            bottom: 80px;
+            right: 20px;
+            width: 300px;
+            background: white;
+            border: 1px solid #ccc;
+            box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.1);
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        #chatHeader {
+            background-color: #4b0082;
+            color: white;
+            padding: 10px;
+            cursor: pointer;
+            text-align: center;
+        }
+
+        #chatBox {
+            height: 300px;
+            overflow-y: scroll;
+            padding: 10px;
+        }
+
+        #chatInputContainer {
+            display: flex;
+            padding: 10px;
+            border-top: 1px solid #ccc;
+        }
+
+        #userInput {
+            flex: 1;
+            padding: 10px;
+            border: none;
+        }
+
+        #sendButton {
+            padding: 10px;
+            background: #4b0082;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+
+        .user-message {
+            text-align: right;
+            color: #007bff;
+        }
+        .assistant-message {
+            text-align: left;
+            color: #28a745;
+        }
     </style>
 </head>
 <body>
-
     <header>
         <h1>Fighting Covert Aggressives</h1>
         <p>Breaking the silence.</p>
@@ -75,7 +145,15 @@
         <a href="/strategy.html">Strategizing</a>
         <a href="/profiles.html">Profiles</a>
     </nav>
-
+<button id="chatButton" onclick="toggleChat()">&#x1F5E8;</button>
+<div id="chatContainer">
+    <div id="chatHeader" onclick="toggleChat()">chatbot (click to close)</div>
+    <div id="chatBox"></div>
+    <div id="chatInputContainer">
+        <input type="text" id="userInput" placeholder="Type your message here...">
+        <button id="sendButton" onclick="sendMessage()">Send</button>
+    </div>
+</div>
     <main>
         {% block content %}{% endblock %}
     </main>
@@ -83,6 +161,32 @@
     <footer>
         &copy; 2025 Voices Against Manipulation. All rights reserved.
     </footer>
+<script>
+    function toggleChat(){
+        let chatContainer = document.getElementById("chatContainer");
+        chatContainer.style.display = (chatContainer.style.display === "none" || chatContainer.style.display === "") ? "block" : "none";
+    } 
 
+    function sendMessage(){
+        let userInput = document.getElementById("userInput").value;
+
+        if (!userInput.trim()) return;
+
+        document.getElementById("chatBox").innerHTML += "<p>You: " + userInput + "</p>";
+        document.getElementById("userInput").value = "";
+
+        fetch("get_response", {
+           method: "POST",
+           headers: {"Content-Type": "application/json"},
+           body: JSON.stringify({message: userInput})
+        })
+        .then(response => response.json())
+        .then(data => {
+            document.getElementById("chatBox").innerHTML += "<p>Assistant: " + data.response + "</p>";
+            document.getElementById("chatBox").scrollTop = document.getElementById("chatBox").scrollHeight;           
+        });
+    }
+
+</script>
 </body>
 </html>
