@@ -2,13 +2,16 @@ from flask import render_template, Flask, request, jsonify, redirect, url_for, f
 from urllib.parse import urlsplit
 from application import app, db
 from application.forms import LoginForm
-import requests
+import requests, os
+from dotenv import load_dotenv
 from flask_login import current_user, login_user, login_required, logout_user
 import sqlalchemy as sa
 from application.models import User
 from application.forms import RegistrationForm
 
-API_KEY = 'YOUR OPENAI_API_KEY HERE'  # Replace with your actual OpenAI API key
+load_dotenv()
+API_KEY = os.getenv("OPENAI_API_KEY")
+
 #== Index route ==
 @app.route('/')
 @app.route('/index')
