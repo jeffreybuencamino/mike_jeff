@@ -1,15 +1,19 @@
-from flask import render_template, Flask, request, jsonify
-from application import app
+from flask import render_template, Flask, request, jsonify, redirect, url_for, flash
+from urllib.parse import urlsplit
+from application import app, db
 from application.forms import LoginForm
 import requests
+from flask_login import current_user, login_user, login_required, logout_user
+import sqlalchemy as sa
+from application.models import User
+from application.forms import RegistrationForm
 
-API_KEY = 'Your OPENAI API Key'  # Replace with your actual OpenAI API key
+API_KEY = 'YOUR OPENAI_API_KEY HERE'  # Replace with your actual OpenAI API key
 #== Index route ==
 @app.route('/')
 @app.route('/index')
 def index():
-    user = {'username': 'Mike'}
-    return render_template('index.html', title="Home Page", user=user)
+    return render_template('index.html', title="Home Page")
 
 #== Profiles route ==
 @app.route('/profiles.html')
@@ -29,14 +33,51 @@ def mindmap():
 
 #== Strategizing route ==
 @app.route('/strategy.html')
+@login_required
 def strategy():
     return render_template('strategy.html', title="Strategizing")
 
 #== Login route ==
 @app.route('/login.html', methods=['GET', 'POST'])
 def login():
+    if current_user.is_authenticated:
+        return redirect(url_for('index'))
     form = LoginForm()
+    if form.validate_on_submit():
+        user = db.session.scalar(
+            sa.select(User).where(User.username == form.username.data)
+        )
+        if user is None or not user.check_password(form.password.data):
+            flash('Invalid username or password')
+            return redirect(url_for('login'))
+        login_user(user, remember=form.remember_me.data)
+        next_page = request.args.get('next')
+        if not next_page or urlsplit(next_page).netloc != '':
+            next_page = url_for('resources')
+        return redirect(url_for('index'))
     return render_template('login.html', title="Login", form=form)
+
+#== Logout route ==
+@app.route('/logout')
+def logout():
+    logout_user()
+    return redirect(url_for('index'))
+
+
+#== Registration route ==
+@app.route('/register', methods=['GET', 'POST'])
+def register():
+    if current_user.is_authenticated:
+        return redirect(url_for('index'))
+    form = RegistrationForm()
+    if form.validate_on_submit():
+        user = User(username=form.username.data, email=form.email.data)
+        user.set_password(form.password.data)
+        db.session.add(user)
+        db.session.commit()
+        flash('Congratulations, you are now a registered user!')
+        return redirect(url_for('login'))
+    return render_template('register.html', title='Register', form=form)
 
 @app.route('/get_response', methods=['POST'])
 def get_response():
